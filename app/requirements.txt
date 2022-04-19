@@ -1,0 +1,14 @@
+aiofiles
+click
+fastapi
+h11
+Jinja2
+MarkupSafe
+Pillow
+pydantic
+pytesseract
+python-multipart
+six
+starlette
+typing-extensions
+uvicorn
