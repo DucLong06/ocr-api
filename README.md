@@ -2,10 +2,10 @@
 
 ## Build image 
 ```bash
-docker build -t api-ocr .
+docker build -t ocr-apis .
 ```
 
 ## Run image 
 ```bash
-docker run -d --name mycontainer -p 80:80 api-ocr
+docker run -d --name mycontainer -p 80:80 ocr-apis
 ````
