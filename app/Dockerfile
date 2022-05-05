@@ -4,14 +4,15 @@ COPY requirements.txt .
 
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \ 
-    tesseract-ocr && \
+    tesseract-ocr\
+    tesseract-ocr-vie && \
     # Install depencies
     pip --no-cache install \
     pillow \
     pytesseract && \
     # Instal project requirements
     pip --no-cache install -r requirements.txt && \
-    # Cleaning
+    # Cleanings
     apt-get clean               && \
     apt-get autoremove          && \
     rm -rf /var/lib/apt/lists/* && \
@@ -23,8 +24,5 @@ RUN apt-get update && \
 COPY . .
 
 EXPOSE 8000
-
-
-# ENTRYPOINT python3 server.py
 
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
