@@ -3,7 +3,7 @@ import os
 import sys
 
 
-async def read_image(img_path, lang="vie"):
+async def read_image(img_path, lang="eng"):
     """
     Performs OCR on a single image
 
@@ -20,7 +20,7 @@ async def read_image(img_path, lang="vie"):
         return "[ERROR] Unable to process file: {0}".format(img_path)
 
 
-async def read_images_from_dir(dir_path, lang="vie", write_to_file=False):
+async def read_images_from_dir(dir_path, lang="eng", write_to_file=False):
     """
     Performs OCR on all images present in a directory
 
