@@ -22,26 +22,26 @@ async def extract_text(image: UploadFile = File(...)):
     return {"filename": image.filename, "text": text}
 
 
-@app.post("/bulk_extract_text")
-async def bulk_extract_text(request: Request, bg_task: BackgroundTasks):
-    images = await request.form()
-    folder_name = str(uuid.uuid4())
-    os.mkdir(folder_name)
+# @app.post("/bulk_extract_text")
+# async def bulk_extract_text(request: Request, bg_task: BackgroundTasks):
+#     images = await request.form()
+#     folder_name = str(uuid.uuid4())
+#     os.mkdir(folder_name)
 
-    for image in images.values():
-        temp_file = _save_file_to_disk(image, path=folder_name, save_as=image.filename)
+#     for image in images.values():
+#         temp_file = _save_file_to_disk(image, path=folder_name, save_as=image.filename)
 
-    bg_task.add_task(ocr.read_images_from_dir, folder_name, write_to_file=True)
-    return {"task_id": folder_name, "num_files": len(images)}
+#     bg_task.add_task(ocr.read_images_from_dir, folder_name, write_to_file=True)
+#     return {"task_id": folder_name, "num_files": len(images)}
 
 
-@app.get("/bulk_output/{task_id}")
-async def bulk_output(task_id):
-    text_map = {}
-    for file_ in os.listdir(task_id):
-        if file_.endswith("txt"):
-            text_map[file_] = open(os.path.join(task_id, file_)).read()
-    return {"task_id": task_id, "output": text_map}
+# @app.get("/bulk_output/{task_id}")
+# async def bulk_output(task_id):
+#     text_map = {}
+#     for file_ in os.listdir(task_id):
+#         if file_.endswith("txt"):
+#             text_map[file_] = open(os.path.join(task_id, file_)).read()
+#     return {"task_id": task_id, "output": text_map}
 
 
 def _save_file_to_disk(uploaded_file, path=".", save_as="default"):

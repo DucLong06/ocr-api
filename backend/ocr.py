@@ -11,7 +11,6 @@ async def read_image(img_path, lang="vie"):
 
 
 async def read_images_from_dir(dir_path, lang="vie", write_to_file=False):
-
     converted_text = {}
     for file_ in os.listdir(dir_path):
         if file_.endswith(("png", "jpeg", "jpg")):
