@@ -1,10 +1,15 @@
 
 #!/usr/bin/env bash
 
-# clean docker 
+# clean docker docker-compose
 docker-compose down
 docker rm -f $(docker ps -a -q)
 docker volume rm $(docker volume ls -q)
+
+# clearn docker image <none>
+docker rmi $(docker images -q)
+docker rmi $(docker images | grep “^” | awk “{print $3}”)
+docker rmi $(docker images -f “dangling=true” -q)
 
 # build image
 docker build -t ocr-apis .
