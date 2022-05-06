@@ -4,11 +4,10 @@ import sys
 
 
 async def read_image(img_path, lang="vie"):
-
     try:
         return pytesseract.image_to_string(img_path, lang=lang)
     except Exception as e:
-        return "[ERROR] {0}".format(str(e))
+        return "[ERROR Tesseract] {0}".format(str(e))
 
 
 async def read_images_from_dir(dir_path, lang="vie", write_to_file=False):
