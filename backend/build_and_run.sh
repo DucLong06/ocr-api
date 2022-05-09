@@ -1,6 +1,10 @@
 
 #!/usr/bin/env bash
 
+# permission
+sudo chmod 666 /var/run/docker.sock
+
+
 # clean docker docker-compose
 docker-compose down
 docker rm -f $(docker ps -a -q)
