@@ -21,8 +21,8 @@ async def read_images_from_dir(dir_path, lang="vie", write_to_file=False):
     if write_to_file:
         for file_path, text in converted_text.items():
             _write_to_file(text, os.path.splitext(file_path)[0] + ".json")
-    return converted_text  
- 
+    return converted_text
+
 
 def _write_to_file(text, file_path):
     print("[INFO] Writing text to file: {0}".format(file_path))
@@ -31,7 +31,7 @@ def _write_to_file(text, file_path):
 
 
 def _ocr_and_detect(img_path, lang):
-    d = pytesseract.image_to_data(img_path, output_type=Output.DICT)
+    d = pytesseract.image_to_data(img_path, output_type=Output.DICT, lang="vie")
     n_boxes = len(d["text"])
     list_outputs = []
     for i in range(n_boxes):
