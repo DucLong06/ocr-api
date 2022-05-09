@@ -1,0 +1,51 @@
+[
+    {
+        "Text": "Du",
+        "X": 9,
+        "Y": 7,
+        "Width": 56,
+        "Height": 39
+    },
+    {
+        "Text": "kién",
+        "X": 9,
+        "Y": 77,
+        "Width": 74,
+        "Height": 33
+    },
+    {
+        "Text": "cong",
+        "X": 10,
+        "Y": 167,
+        "Width": 84,
+        "Height": 42
+    },
+    {
+        "Text": "viéc",
+        "X": 10,
+        "Y": 265,
+        "Width": 73,
+        "Height": 40
+    },
+    {
+        "Text": "ngay",
+        "X": 11,
+        "Y": 351,
+        "Width": 85,
+        "Height": 42
+    },
+    {
+        "Text": "ké",
+        "X": 11,
+        "Y": 449,
+        "Width": 42,
+        "Height": 33
+    },
+    {
+        "Text": "tiép",
+        "X": 11,
+        "Y": 503,
+        "Width": 70,
+        "Height": 42
+    }
+]
