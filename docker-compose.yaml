@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  backend:
+    build: .
+    container_name: api-ocr
+    volumes:
+      - ./log:/log
+      - ./input:/input
+      - ./output:/output
+      - ./weights:/weights
+    entrypoint: ["sh", "./docker-entrypoint.sh"]
+    ports:
+      - "5000:5000"

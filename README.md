@@ -1,11 +1,11 @@
-# ocr-api
+# HideIn4CV
 
-## Build image 
+
+## Upload image to GCR:
 ```bash
-docker build -t ocr-apis .
+bash build.sh
 ```
-
-## Run image 
+## Run on server:
 ```bash
-docker run -d --name mycontainer -p 8000:8000 ocr-apis
-````
+docker-compose up --build
+```
