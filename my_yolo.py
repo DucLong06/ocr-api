@@ -20,10 +20,8 @@ def _check_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower()
 
 
-
-
 def _draw_rectangle(image, x1, y1, x2, y2):
-    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 0), -1)
+    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 0))
 
 
 def _call_yolo(model, path_to_image, path_save_output):
@@ -35,7 +33,7 @@ def _call_yolo(model, path_to_image, path_save_output):
         "X_min": 0,
         "Y_min": 0,
         "X_max": 0,
-        "y_max": 0,
+        "Y_max": 0,
     }
     for i in results.pandas().xyxy[0].values.tolist():
         img = _draw_rectangle(img, i[0], i[1], i[2], i[3])
