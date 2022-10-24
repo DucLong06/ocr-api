@@ -8,6 +8,8 @@ from flask_cors import CORS
 import my_env
 import my_logger
 import my_yolo
+import my_ocr
+
 
 # Khởi tạo Flask Server Backend
 app = Flask(__name__)
@@ -15,15 +17,28 @@ app = Flask(__name__)
 # Apply Flask CORS
 CORS(app)
 
+# path model
+PATH_INIT_MODEL = os.path.join(my_env.PATH_TO_MODEL_REC_CI, "init_model.meta")
+PATH_MODEL_META = os.path.join(
+    my_env.PATH_TO_MODEL_REC_CHECKPOINT, "model.ckpt-1184100.meta"
+)
+PATH_CHECKPOINT = my_env.PATH_TO_MODEL_REC_CHECKPOINT
+
 # Load model
-MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_CV)
-MODEL_DETECT_CI = my_yolo.load_model(my_env.PATH_TO_MODEL_CI)
-# Loger
+MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CV)
+MODEL_DETECT_CI = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CI)
+MODEL_REC = my_ocr.load_model_recog(PATH_INIT_MODEL, PATH_MODEL_META, PATH_CHECKPOINT)
+
+# Logger
 logger = my_logger.Logger("LOG", my_env.LOG)
 
 
 def _call_my_yolo(model, path_to_save):
     return my_yolo.predict_model(model, path_to_save)
+
+
+def _call_my_ocr(model, path_to_img):
+    return my_ocr.predict_model(model, path_to_img)
 
 
 @app.route("/", methods=["GET"])
@@ -80,12 +95,13 @@ def recognize():
             )
             image.save(path_to_save)
             logger.info("Save file: %s" % path_to_save)
-            imagebase64, area = _call_my_yolo(MODEL_CV, path_to_save)
+            text, probability = _call_my_ocr(MODEL_REC, path_to_save)
             logger.info("Done processing")
-        return {"area": area, "imagebase64": imagebase64}
+        return {"text": text, "probability": str(probability)}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Upload file to detect"
+
 
 # Start Backend
 if __name__ == "__main__":

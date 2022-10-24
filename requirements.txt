@@ -15,7 +15,7 @@ tqdm>=4.41.0
 protobuf<4.21.3  # https://github.com/ultralytics/yolov5/issues/8012
 
 # Logging -------------------------------------
-tensorboard>=2.4.1
+tensorboard==1.15.0
 
 # Plotting ------------------------------------
 pandas>=1.1.4
@@ -30,4 +30,8 @@ thop  # FLOPs computation
 flask
 flask-cors
 gunicorn
+
+# ocr
+tensorflow==1.15.0
+
 
