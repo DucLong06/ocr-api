@@ -1,0 +1,29 @@
+.endpoint-area{
+    background: var(--white);
+    min-height: calc(100vh - 188px);
+    display: grid;
+    grid-template-columns: 320px auto;
+    .endpoint-group-main,
+    .endpoint-group-item{
+        &:hover{
+            background-color: rgba(229,231,235,.5);
+        }
+    }
+    .endpoint-path-input{
+        background: rgba(243, 244, 246, 0.5);
+        .endpoint-path{
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+    .drop-down-create{
+        .ant-btn.ant-btn-default{
+           background: #E5E7EB;
+        }
+    }
+}
+.syntax-highlighter-wrapper > pre {
+    margin-bottom: 0;
+    height: 300px;
+    overflow: auto !important;
+}

@@ -21,7 +21,7 @@ def _check_file(filename):
 
 
 def _draw_rectangle(image, x1, y1, x2, y2):
-    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 0))
+    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255),3)
 
 
 def _call_yolo(model, path_to_image, path_save_output):

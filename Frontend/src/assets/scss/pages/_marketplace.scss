@@ -1,0 +1,90 @@
+.market-banner{
+    background: rgba(189, 222, 248, 0.15);
+    .market-banner-image{
+        // .bg{
+        //     position: absolute;
+        // }
+        // .hero{
+        //     position: absolute;
+        //     top: 50%;
+        //     transform: translateY(-50%);
+        //     z-index: 2;
+        // }
+    }
+}
+
+
+
+.marketplace-detail{
+    .container{
+        max-width: 815px;
+    }
+}
+.ant-tag{
+    &.api-cat-tag{
+        &.ant-tag-default {
+            background-color: var(--white);
+            padding: 4px 16px;
+        }
+        &.api-cat-tag--entertainment{
+            .anticon{
+                color: var(--danger-500);
+            }
+        }
+        &.api-cat-tag--social{
+            .anticon{
+                color: var(--success-500);
+            }
+        }
+        &.api-cat-tag--data{
+            .anticon{
+                color: var(--warning-500);
+            }
+        }
+
+    }
+}
+
+
+.endpoint-area{
+    background: var(--white);
+    min-height: calc(100vh - 188px);
+    display: grid;
+    grid-template-columns: 320px auto;
+    .endpoint-group-main,
+    .endpoint-group-item{
+        &:hover{
+            background-color: rgba(229,231,235,.5);
+        }
+    }
+    .endpoint-path-input{
+        background: rgba(243, 244, 246, 0.5);
+        .endpoint-path{
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+}
+.syntax-highlighter-wrapper > pre {
+    margin-bottom: 0;
+    height: 300px;
+    overflow: auto !important;
+}
+
+
+.quick-search-result{
+    position: absolute;
+    top: calc(100% + 9px);
+    left: 0;
+    z-index: 27;
+    width: 350px;
+    .quick-search-inner{
+        box-shadow: 0px 3px 6px -4px rgba(0, 0, 0, 0.12), 0px 6px 16px rgba(0, 0, 0, 0.08), 0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+        .quick-search-block-api-item{
+            background-color: var(--white);
+            &:hover{
+                background-color: #F0FBFF;
+            }
+        }
+    }
+}

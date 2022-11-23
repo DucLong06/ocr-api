@@ -1,0 +1,33 @@
+.ant-pagination.ant-table-pagination.ant-table-pagination-right{
+    display: none !important;
+}
+.button-icon-right{
+    display: inline-flex;
+    align-items: center;
+    span{
+        order:0;
+        margin-left:0 !important;
+
+        &.anticon{
+            order: 1;
+            margin-left:8px !important;
+        }
+    }
+
+}
+.circle{
+    height: 12px;
+    width: 12px;
+    background: #FF7A45;
+    border-radius: 50%;
+    display: inline-block;
+    
+}
+.circle-black{
+    height: 12px;
+    width: 12px;
+    background:black;
+    border-radius: 50%;
+    display: inline-block;
+}
+

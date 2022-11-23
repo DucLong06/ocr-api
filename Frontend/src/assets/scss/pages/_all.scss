@@ -1,0 +1,37 @@
+.switch-select{
+    width: 224px;
+    padding: 4px 0;
+}
+.switch-select > .ant-select-selector {
+    height: 40px !important;
+}
+.switch-select > .ant-select-selector > span {
+    height: 38px !important;
+}
+.switch-select > .ant-select-selector > span > .switch-select-option{
+    height: 38px !important;
+}
+.switch-select-option{
+    padding: 1px 0px;
+}
+
+.iframe-buy-dashboard {
+    border: 0;
+    width: 100%;
+    height: calc(100vh - 320px);
+}
+
+
+.iframe-sell-dashboard {
+    border: 0;
+    width: 100%;
+    height: calc(100vh - 172px);
+}
+.switch-select-placeholder{
+    width: 224px;
+    height: 40px;
+    padding: 4px 0;
+    background-color: var(--white);
+    border: 1px solid #E3E5E5;
+    border-radius: 6px;
+}

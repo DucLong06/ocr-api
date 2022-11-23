@@ -37,8 +37,8 @@ def _call_my_yolo(model, path_to_save):
     return my_yolo.predict_model(model, path_to_save)
 
 
-def _call_my_ocr(model, path_to_img):
-    return my_ocr.predict_model(model, path_to_img)
+def _call_my_ocr(model, list_area, path_to_save):
+    return my_ocr.recognize_images(model, list_area,path_to_save)
 
 
 @app.route("/", methods=["GET"])
@@ -78,7 +78,7 @@ def detect_cv():
             logger.info("Save file: %s" % path_to_save)
             imagebase64, area = _call_my_yolo(MODEL_CV, path_to_save)
             logger.info("Done processing")
-        return {"area": area, "imagebase64": imagebase64}
+        return {"Area": area, "imagebase64": str(imagebase64)}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Upload file to detect"
@@ -95,9 +95,16 @@ def recognize():
             )
             image.save(path_to_save)
             logger.info("Save file: %s" % path_to_save)
-            text, probability = _call_my_ocr(MODEL_REC, path_to_save)
+            logger.info("Detecting image: %s" % str(image.filename))
+            imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
+            if len(area)!=0:
+                logger.info("Reciginzing image: %s" % str(image.filename))
+                text = _call_my_ocr(MODEL_REC, area, path_to_save)
+            else:
+                text = ""
             logger.info("Done processing")
-        return {"text": text, "probability": str(probability)}
+        # return {"text": text, "imagebase64": str(imagebase64)}
+        return {"text":text}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Upload file to detect"
