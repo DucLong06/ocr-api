@@ -1,3 +1,4 @@
+import base64
 import os
 import uuid
 
@@ -38,7 +39,12 @@ def _call_my_yolo(model, path_to_save):
 
 
 def _call_my_ocr(model, list_area, path_to_save):
-    return my_ocr.recognize_images(model, list_area,path_to_save)
+    return my_ocr.recognize_images(model, list_area, path_to_save)
+
+
+def _convert_and_save(b64_string, path_to_save):
+    with open(path_to_save , "wb") as fh:
+        fh.write(base64.decodebytes(b64_string.encode()))
 
 
 @app.route("/", methods=["GET"])
@@ -46,38 +52,21 @@ def ping():
     return {"msg": "Server is OK"}
 
 
-@app.route("/detect-ci", methods=["POST"])
-def detect_text():
-    image = request.files["file"]
-    logger.info("Improcessing image: %s" % str(image.filename))
-    try:
-        if image:
-            path_to_save = os.path.join(
-                my_env.UPLOAD_FOLDER, str(uuid.uuid4()) + image.filename
-            )
-            image.save(path_to_save)
-            logger.info("Save file: %s" % path_to_save)
-            imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
-            logger.info("Done processing")
-        return {"Area": area, "ImageBase64": str(imagebase64)}
-    except Exception as e:
-        logger.error("Error processing image: %s" % str(e))
-    return "Upload file to detect"
-
 
 @app.route("/cv", methods=["POST"])
 def detect_cv():
-    image = request.files["file"]
-    logger.info("Improcessing image: %s" % str(image.filename))
+    b64_string = request.get_json()["ImageBase64"]
+   
     try:
-        if image:
-            path_to_save = os.path.join(
-                my_env.UPLOAD_FOLDER, str(uuid.uuid4()) + image.filename
-            )
-            image.save(path_to_save)
-            logger.info("Save file: %s" % path_to_save)
-            imagebase64, area = _call_my_yolo(MODEL_CV, path_to_save)
-            logger.info("Done processing")
+        path_to_save = os.path.join(my_env.UPLOAD_FOLDER, str(uuid.uuid4())) +'.jpg'
+        
+        logger.info("Improcessing image: %s" % str(path_to_save))
+        _convert_and_save(b64_string, path_to_save)
+        logger.info("Save file: %s" % path_to_save)
+        
+        imagebase64, area = _call_my_yolo(MODEL_CV, path_to_save)
+        logger.info("Done processing")
+        
         return {"Area": area, "imagebase64": str(imagebase64)}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
@@ -86,25 +75,26 @@ def detect_cv():
 
 @app.route("/img2text", methods=["POST"])
 def recognize():
-    image = request.files["file"]
-    logger.info("Improcessing image: %s" % str(image.filename))
+    b64_string = request.get_json()["ImageBase64"]
     try:
-        if image:
-            path_to_save = os.path.join(
-                my_env.UPLOAD_FOLDER, str(uuid.uuid4()) + image.filename
-            )
-            image.save(path_to_save)
-            logger.info("Save file: %s" % path_to_save)
-            logger.info("Detecting image: %s" % str(image.filename))
-            imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
-            if len(area)!=0:
-                logger.info("Reciginzing image: %s" % str(image.filename))
-                text = _call_my_ocr(MODEL_REC, area, path_to_save)
-            else:
-                text = ""
-            logger.info("Done processing")
-        # return {"text": text, "imagebase64": str(imagebase64)}
-        return {"text":text}
+        path_to_save = os.path.join(my_env.UPLOAD_FOLDER, str(uuid.uuid4())) +'.jpg'
+        
+        logger.info("Improcessing image: %s" % str(path_to_save))
+        _convert_and_save(b64_string, path_to_save)
+        logger.info("Save file: %s" % path_to_save)
+        
+        logger.info("Detecting image: %s" % str(path_to_save))
+        imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
+        
+        if len(area) != 0:
+            logger.info("Reciginzing image: %s" % str(path_to_save))
+            text = _call_my_ocr(MODEL_REC, area, path_to_save)
+        else:
+            text = ""
+            
+        logger.info("Done processing")
+        return {"text": text, "imagebase64": str(imagebase64)}
+    # return {"text":text}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Upload file to detect"

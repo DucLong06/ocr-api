@@ -1,53 +1,55 @@
 import { useEffect, useRef, useState } from "react";
-import { Group, Stack, Text, Image, Progress, Button } from "@mantine/core";
+import {
+    Group,
+    Stack,
+    Text,
+    Image,
+    Progress,
+    Button,
+    Loader,
+} from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { createWorker } from "tesseract.js";
+import { _IApiResponse } from "../utils/interfaces/IApiResponse";
+import axiosClient from "../utils/apis/RequestHelper";
+
+interface Idata {
+    ImageBase64: string;
+}
 
 const Home = () => {
-    const [imageData, setImageData] = useState<null | string>(null);
+    let [imageData, setImageData] = useState<null | string>(null);
+    const [imageOutput, setImageOutput] = useState<null | string>(null);
     const loadFile = (file: File) => {
         const reader = new FileReader();
         reader.onloadend = () => {
             const imageDataUri = reader.result;
             setImageData(imageDataUri as string);
+            console.log(imageData);
         };
         reader.readAsDataURL(file);
     };
 
-    const [progress, setProgress] = useState(0);
-    const [progressLabel, setProgressLabel] = useState("idle");
     const [ocrResult, setOcrResult] = useState("");
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {}, []);
 
-    const workerRef = useRef<Tesseract.Worker | null>(null);
-    useEffect(() => {
-        workerRef.current = createWorker({
-            logger: (message) => {
-                if ("progress" in message) {
-                    setProgress(message.progress);
-                    setProgressLabel(
-                        message.progress == 1 ? "Done" : message.status
-                    );
-                }
-            },
-        });
-        return () => {
-            workerRef.current?.terminate();
-            workerRef.current = null;
-        };
-    }, []);
+    const post = async (path: string, data: Idata): Promise<_IApiResponse> => {
+        return axiosClient.post(`/${path}`, data);
+    };
 
     const handleExtract = async () => {
-        setProgress(0);
-        setProgressLabel("starting");
+        setLoading(true);
+        let imgBase64 = imageData as string;
+        const response = await post("img2text", {
+            ImageBase64: imgBase64.replace(/^data:image\/[a-z]+;base64,/, ""),
+        });
+        setOcrResult(response.body.text);
+        setImageData(
+            "data:image/jpeg;base64," +
+                response.body.imagebase64.replace("b", "").replace("'", "")
+        );
 
-        const worker = workerRef.current!;
-        await worker.load();
-        await worker.loadLanguage("vie");
-        await worker.initialize("vie");
-
-        const response = await worker.recognize(imageData!);
-        setOcrResult(response.data.text);
-        console.log(response.data);
+        setLoading(false);
     };
 
     return (
@@ -60,7 +62,11 @@ const Home = () => {
                         multiple={false}
                     >
                         {() => (
-                            <Text size="xl" inline style={{textAlign:"center"}}>
+                            <Text
+                                size="xl"
+                                inline
+                                style={{ textAlign: "center" }}
+                            >
                                 Kéo hình ảnh vào đây hoặc bấm để chọn tập tin
                             </Text>
                         )}
@@ -72,45 +78,40 @@ const Home = () => {
                 </Stack>
 
                 <Stack style={{ flex: "1" }}>
-                    <div className="" style={{ display: "flex", gap: "30px" }}>
+                    <div className="flex gap-11">
                         <Button
-                            disabled={!imageData || !workerRef.current}
+                            disabled={!imageData}
                             onClick={handleExtract}
+                            className="bg-blue-500"
                         >
                             Nhận dạng chữ in
                         </Button>
                         <Button
-                            disabled={!imageData || !workerRef.current}
+                            disabled={!imageData}
                             onClick={handleExtract}
+                            className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
-                            disabled={!imageData || !workerRef.current}
+                            disabled={!imageData}
                             onClick={handleExtract}
+                            className="bg-blue-500"
                         >
                             Bóc tách thông tin CMND
                         </Button>
-                        <Button
-                            disabled={!imageData || !workerRef.current}
-                            onClick={handleExtract}
-                        >
-                            Segment Chữ In
-                        </Button>
-                        <Button
-                            disabled={!imageData || !workerRef.current}
-                            onClick={handleExtract}
-                        >
-                            Segment CV
-                        </Button>
                     </div>
 
-                    <Text>{progressLabel.toUpperCase()}</Text>
-                    <Progress value={progress * 100} />
+                    {/* <Text>{progressLabel.toUpperCase()}</Text>
+                    <Progress value={progress * 100} /> */}
 
-                    {!!ocrResult && (
-                        <Stack>
-                            <Text size="xl">RESULT</Text>
+                    <Stack>
+                        <Text size="xl" className="">
+                            Kết quả nhận dạng
+                        </Text>
+                        {loading ? (
+                            <Loader variant="dots" size="xl" />
+                        ) : (
                             <Text
                                 style={{
                                     fontFamily: "monospace",
@@ -120,8 +121,8 @@ const Home = () => {
                             >
                                 {ocrResult}
                             </Text>
-                        </Stack>
-                    )}
+                        )}
+                    </Stack>
                 </Stack>
             </Group>
         </div>
