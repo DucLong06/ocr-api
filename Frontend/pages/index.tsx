@@ -1,24 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import {
-    Group,
-    Stack,
-    Text,
-    Image,
-    Progress,
-    Button,
-    Loader,
-} from "@mantine/core";
+import { Button, Group, Image, Loader, Stack, Text } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { _IApiResponse } from "../utils/interfaces/IApiResponse";
+import { useEffect, useState } from "react";
 import axiosClient from "../utils/apis/RequestHelper";
+import { _IApiResponse } from "../utils/interfaces/IApiResponse";
 
 interface Idata {
     ImageBase64: string;
 }
 
 const Home = () => {
-    let [imageData, setImageData] = useState<null | string>(null);
-    const [imageOutput, setImageOutput] = useState<null | string>(null);
+    const [imageData, setImageData] = useState<null | string>(null);
     const loadFile = (file: File) => {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -44,10 +35,7 @@ const Home = () => {
             ImageBase64: imgBase64.replace(/^data:image\/[a-z]+;base64,/, ""),
         });
         setOcrResult(response.body.text);
-        setImageData(
-            "data:image/jpeg;base64," +
-                response.body.imagebase64.replace("b", "").replace("'", "")
-        );
+        setImageData("data:image/jpeg;base64," + response.body.imagebase64);
 
         setLoading(false);
     };
@@ -110,13 +98,16 @@ const Home = () => {
                             Kết quả nhận dạng
                         </Text>
                         {loading ? (
-                            <Loader variant="dots" size="xl" />
+                            <div className="flex justify-center">
+                                <Loader variant="dots" size={100} />
+                            </div>
                         ) : (
                             <Text
                                 style={{
                                     fontFamily: "monospace",
                                     background: "gray",
                                     padding: "10px",
+                                    whiteSpace: "pre-line",
                                 }}
                             >
                                 {ocrResult}

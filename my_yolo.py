@@ -2,7 +2,6 @@ import base64
 
 import cv2
 import torch
-import os
 
 import my_env
 
@@ -14,10 +13,6 @@ def load_model(path_to_model):
         "ultralytics/yolov5", "custom", path=path_to_model, force_reload=True
     )
     return model
-
-
-def _check_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower()
 
 
 def _draw_rectangle(image, x1, y1, x2, y2):
