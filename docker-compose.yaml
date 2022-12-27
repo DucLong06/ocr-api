@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+  
   backend:
     build: .
     container_name: api-ocr
@@ -12,3 +13,12 @@ services:
     entrypoint: ["sh", "./docker-entrypoint.sh"]
     ports:
       - "5000:5000"
+
+  frontend:
+    build: /Frontend/.
+    container_name: FE-ocr
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+

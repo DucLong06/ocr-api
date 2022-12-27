@@ -30,13 +30,27 @@ const Home = () => {
 
     const handleExtract = async () => {
         setLoading(true);
-        let imgBase64 = imageData as string;
-        const response = await post("img2text", {
-            ImageBase64: imgBase64.replace(/^data:image\/[a-z]+;base64,/, ""),
-        });
-        setOcrResult(response.body.text);
-        setImageData("data:image/jpeg;base64," + response.body.imagebase64);
+        try {
+            let imgBase64 = imageData as string;
+            const response = await post("img2text", {
+                ImageBase64: imgBase64.replace(
+                    /^data:image\/[a-z]+;base64,/,
+                    ""
+                ),
+            });
+            setOcrResult(response.body.text);
+            setImageData("data:image/jpeg;base64," + response.body.imagebase64);
+        } catch (error) {
+            console.log(error);
+        }
 
+        setLoading(false);
+    };
+
+    const handleCV = async () => {
+        setLoading(true);
+        try {
+        } catch (error) {}
         setLoading(false);
     };
 
@@ -68,21 +82,21 @@ const Home = () => {
                 <Stack style={{ flex: "1" }}>
                     <div className="flex gap-11">
                         <Button
-                            disabled={!imageData}
+                            disabled={!imageData || loading}
                             onClick={handleExtract}
                             className="bg-blue-500"
                         >
                             Nhận dạng chữ in
                         </Button>
                         <Button
-                            disabled={!imageData}
+                            disabled={!imageData || loading}
                             onClick={handleExtract}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
-                            disabled={!imageData}
+                            disabled={!imageData || loading}
                             onClick={handleExtract}
                             className="bg-blue-500"
                         >
@@ -99,7 +113,7 @@ const Home = () => {
                         </Text>
                         {loading ? (
                             <div className="flex justify-center">
-                                <Loader variant="dots" size={100} />
+                                <Loader size={100} variant="dots" />;
                             </div>
                         ) : (
                             <Text

@@ -31,14 +31,15 @@ def _call_yolo(model, path_to_image, path_save_output):
         "Y_max": 0,
     }
     for i in results.pandas().xyxy[0].values.tolist():
-        img = _draw_rectangle(img, i[0], i[1], i[2], i[3])
-        output["Label"] = i[6]
-        output["X_min"] = i[0]
-        output["Y_min"] = i[1]
-        output["X_max"] = i[2]
-        output["Y_max"] = i[3]
-        output_copy = output.copy()
-        list_output.append(output_copy)
+        if i[4] > 0.6:
+            img = _draw_rectangle(img, i[0], i[1], i[2], i[3])
+            output["Label"] = i[6]
+            output["X_min"] = i[0]
+            output["Y_min"] = i[1]
+            output["X_max"] = i[2]
+            output["Y_max"] = i[3]
+            output_copy = output.copy()
+            list_output.append(output_copy)
     cv2.imwrite(path_save_output, img)
     return img, list_output
 
