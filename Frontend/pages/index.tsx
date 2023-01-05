@@ -15,7 +15,6 @@ const Home = () => {
         reader.onloadend = () => {
             const imageDataUri = reader.result;
             setImageData(imageDataUri as string);
-            console.log(imageData);
         };
         reader.readAsDataURL(file);
     };
@@ -28,8 +27,7 @@ const Home = () => {
         return axiosClient.post(`/${path}`, data);
     };
 
-    const handleExtract = async (endpoint: string) => {
-        setLoading(true);
+    const callAPI = async (endpoint: string) => {
         try {
             let imgBase64 = imageData as string;
             const response = await post(endpoint, {
@@ -38,8 +36,18 @@ const Home = () => {
                     ""
                 ),
             });
-            setOcrResult(response.body.text );
             setImageData("data:image/jpeg;base64," + response.body.imagebase64);
+            return response.body;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleExtract = async (endpoint: string) => {
+        setLoading(true);
+        try {
+            var data = await callAPI(endpoint);
+            setOcrResult(data.text);
         } catch (error) {
             console.log(error);
         }
@@ -47,10 +55,23 @@ const Home = () => {
         setLoading(false);
     };
 
-    const handleCV = async () => {
+    const handleCV = async (endpoint: string) => {
         setLoading(true);
         try {
-        } catch (error) {}
+            var data = await callAPI(endpoint);
+            var result = "";
+            for (let i = 0; i < data.res.length; i++) {
+                result +=
+                    data.res[i].Label +
+                    ": " +
+                    data.res[i].Text.replace("\n", "") +
+                    "\n";
+            }
+            setOcrResult(result);
+            console.log(result);
+        } catch (error) {
+            console.log(error);
+        }
         setLoading(false);
     };
 
@@ -90,7 +111,7 @@ const Home = () => {
                         </Button>
                         <Button
                             disabled={!imageData || loading}
-                            onClick={() => handleExtract("cv")}
+                            onClick={() => handleCV("cv")}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
