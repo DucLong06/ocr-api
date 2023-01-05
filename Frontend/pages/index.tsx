@@ -28,17 +28,17 @@ const Home = () => {
         return axiosClient.post(`/${path}`, data);
     };
 
-    const handleExtract = async () => {
+    const handleExtract = async (endpoint: string) => {
         setLoading(true);
         try {
             let imgBase64 = imageData as string;
-            const response = await post("img2text", {
+            const response = await post(endpoint, {
                 ImageBase64: imgBase64.replace(
                     /^data:image\/[a-z]+;base64,/,
                     ""
                 ),
             });
-            setOcrResult(response.body.text);
+            setOcrResult(response.body.text );
             setImageData("data:image/jpeg;base64," + response.body.imagebase64);
         } catch (error) {
             console.log(error);
@@ -83,21 +83,21 @@ const Home = () => {
                     <div className="flex gap-11">
                         <Button
                             disabled={!imageData || loading}
-                            onClick={handleExtract}
+                            onClick={() => handleExtract("img2text")}
                             className="bg-blue-500"
                         >
                             Nhận dạng chữ in
                         </Button>
                         <Button
                             disabled={!imageData || loading}
-                            onClick={handleExtract}
+                            onClick={() => handleExtract("cv")}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
                             disabled={!imageData || loading}
-                            onClick={handleExtract}
+                            onClick={() => handleExtract("cmnd")}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CMND
@@ -113,7 +113,7 @@ const Home = () => {
                         </Text>
                         {loading ? (
                             <div className="flex justify-center">
-                                <Loader size={100} variant="dots" />;
+                                <Loader size={100} variant="dots" />
                             </div>
                         ) : (
                             <Text

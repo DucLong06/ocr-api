@@ -5,12 +5,12 @@ import uuid
 from flask import Flask, request
 from flask_cors import CORS
 
-
+import my_cccd
+import my_cv
 import my_env
 import my_logger
 import my_yolo
 import my_ocr
-
 
 # Khởi tạo Flask Server Backend
 app = Flask(__name__)
@@ -68,16 +68,16 @@ def detect_cv():
 
         if len(area) != 0:
             logger.info("Recognizing image: %s" % str(path_to_save))
-            text = _call_my_ocr(MODEL_REC, area, path_to_save)
+            res = my_cv.handle_ocr_cv(area, path_to_save, MODEL_DETECT_CI, MODEL_REC)
         else:
-            text = ""
+            res = ""
 
         logger.info("Done processing")
 
-        return {"area": area, "imagebase64": str(imagebase64.decode("utf-8"))}
+        return {"res": res, "imagebase64": str(imagebase64.decode("utf-8"))}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
-    return "Upload file to detect"
+    return "Đã có lỗi xảy ra"
 
 
 @app.route("/img2text", methods=["POST"])
@@ -101,7 +101,33 @@ def recognize():
     # return {"text":text}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
-    return "Upload file to detect"
+    return "Đã có lỗi xảy ra"
+
+
+@app.route("/cccd", methods=["POST"])
+def recognize_cccd():
+    text = ""
+    b64_string = request.get_json()["ImageBase64"]
+
+    try:
+        path_to_save = _convert_and_save(b64_string)
+
+        logger.info("Detecting image: %s" % str(path_to_save))
+        imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
+
+        if len(area) != 0:
+            logger.info("Recognizing image: %s" % str(path_to_save))
+            text = _call_my_ocr(MODEL_REC, area, path_to_save)
+            res = my_cccd.handle_CCCD(text, area)
+        else:
+            res = []
+
+        logger.info("Done processing")
+        return {"res": res, "imagebase64": str(imagebase64.decode("utf-8")), "text": text}
+    # return {"text":text}
+    except Exception as e:
+        logger.error("Error processing image: %s" % str(e))
+    return "Đã có lỗi xảy ra"
 
 
 # Start Backend

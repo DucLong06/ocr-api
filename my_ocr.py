@@ -9,7 +9,7 @@ def _sort_Rect(rect, cols):
     ]
 
 
-def _predict_model(sess, img):
+def _predict_model(sess: object, img: object) -> object:
     # ghi ra file gray cho giống y đầu vào của aocr gốc
     matGray_OpenCV = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     success, encoded_image = cv2.imencode(".jpg", matGray_OpenCV)
@@ -27,7 +27,7 @@ def _predict_model(sess, img):
     text = text.decode("utf-8")
 
     # return (text, probability)
-    return (str(text), probability)
+    return str(text), probability
 
 
 def load_model_recog(init, meta, checkpoint):
@@ -45,11 +45,11 @@ def recognize_images(model, list_area, path_to_image):
     list_area.sort(key=lambda x: _sort_Rect(x, img.shape[1]))
     for area in list_area:
         img_crop = img[
-            int(area["Y_min"]) : int(area["Y_max"]),
-            int(area["X_min"]) : int(area["X_max"]),
-        ]
-        color_coverted = cv2.cvtColor(img_crop, cv2.COLOR_BGR2RGB)
-        text_recog, _ = _predict_model(model, color_coverted)
-        text +=text_recog + "\n"
-    return text
+                   int(area["Y_min"]): int(area["Y_max"]),
+                   int(area["X_min"]): int(area["X_max"]),
+                   ]
+        color_covert = cv2.cvtColor(img_crop, cv2.COLOR_BGR2RGB)
+        text_rec, _ = _predict_model(model, color_covert)
 
+        text += text_rec + "\n"
+    return text

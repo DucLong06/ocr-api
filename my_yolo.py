@@ -6,8 +6,6 @@ import torch
 import my_env
 
 
-
-
 def load_model(path_to_model):
     model = torch.hub.load(
         "ultralytics/yolov5", "custom", path=path_to_model, force_reload=True
@@ -16,7 +14,7 @@ def load_model(path_to_model):
 
 
 def _draw_rectangle(image, x1, y1, x2, y2):
-    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255),3)
+    return cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 3)
 
 
 def _call_yolo(model, path_to_image, path_save_output):
@@ -31,6 +29,7 @@ def _call_yolo(model, path_to_image, path_save_output):
         "Y_max": 0,
     }
     for i in results.pandas().xyxy[0].values.tolist():
+        # confidence
         if i[4] > 0.6:
             img = _draw_rectangle(img, i[0], i[1], i[2], i[3])
             output["Label"] = i[6]
@@ -44,7 +43,7 @@ def _call_yolo(model, path_to_image, path_save_output):
     return img, list_output
 
 
-def predict_model(model, path_to_input):
+def predict_model(model: str, path_to_input: str) -> (list, str):
     path_save_output = my_env.OUTPUT_FOLDER + path_to_input.replace(
         my_env.UPLOAD_FOLDER, ""
     )
