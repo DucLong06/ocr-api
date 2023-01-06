@@ -1,8 +1,9 @@
-import { Button, Group, Image, Loader, Stack, Text } from "@mantine/core";
+import { Button, Group, Image, Loader, Stack, Tabs, Text } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
 import axiosClient from "../utils/apis/RequestHelper";
 import { _IApiResponse } from "../utils/interfaces/IApiResponse";
+import TableData from "./tabledata";
 
 interface Idata {
     ImageBase64: string;
@@ -21,13 +22,15 @@ const Home = () => {
 
     const [ocrResult, setOcrResult] = useState("");
     const [loading, setLoading] = useState(false);
+    const [res, setRes] = useState();
     useEffect(() => {}, []);
 
     const post = async (path: string, data: Idata): Promise<_IApiResponse> => {
         return axiosClient.post(`/${path}`, data);
     };
 
-    const callAPI = async (endpoint: string) => {
+    const handleExtract = async (endpoint: string) => {
+        setLoading(true);
         try {
             let imgBase64 = imageData as string;
             const response = await post(endpoint, {
@@ -36,39 +39,10 @@ const Home = () => {
                     ""
                 ),
             });
+            setOcrResult(response.body?.text || "");
+            setRes(response.body?.res || "");
             setImageData("data:image/jpeg;base64," + response.body.imagebase64);
-            return response.body;
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleExtract = async (endpoint: string) => {
-        setLoading(true);
-        try {
-            var data = await callAPI(endpoint);
-            setOcrResult(data.text);
-        } catch (error) {
-            console.log(error);
-        }
-
-        setLoading(false);
-    };
-
-    const handleCV = async (endpoint: string) => {
-        setLoading(true);
-        try {
-            var data = await callAPI(endpoint);
-            var result = "";
-            for (let i = 0; i < data.res.length; i++) {
-                result +=
-                    data.res[i].Label +
-                    ": " +
-                    data.res[i].Text.replace("\n", "") +
-                    "\n";
-            }
-            setOcrResult(result);
-            console.log(result);
+            console.log(res);
         } catch (error) {
             console.log(error);
         }
@@ -111,17 +85,17 @@ const Home = () => {
                         </Button>
                         <Button
                             disabled={!imageData || loading}
-                            onClick={() => handleCV("cv")}
+                            onClick={() => handleExtract("cv")}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
                             disabled={!imageData || loading}
-                            onClick={() => handleExtract("cmnd")}
+                            onClick={() => handleExtract("cccd")}
                             className="bg-blue-500"
                         >
-                            Bóc tách thông tin CMND
+                            Bóc tách thông tin CCCD
                         </Button>
                     </div>
 
@@ -129,25 +103,51 @@ const Home = () => {
                     <Progress value={progress * 100} /> */}
 
                     <Stack>
-                        <Text size="xl" className="">
-                            Kết quả nhận dạng
-                        </Text>
-                        {loading ? (
-                            <div className="flex justify-center">
-                                <Loader size={100} variant="dots" />
-                            </div>
-                        ) : (
-                            <Text
-                                style={{
-                                    fontFamily: "monospace",
-                                    background: "gray",
-                                    padding: "10px",
-                                    whiteSpace: "pre-line",
-                                }}
+                        <>
+                            <Tabs
+                                variant="outline"
+                                tabPadding="sm"
+                          
                             >
-                                {ocrResult}
-                            </Text>
-                        )}
+                                <Tabs.Tab
+                                    label="Kết quả nhận dạng"
+                                    disabled={ocrResult == ""}
+                                    
+                                >
+                                    {loading ? (
+                                        <div className="flex justify-center">
+                                            <Loader size={100} variant="dots" />
+                                        </div>
+                                    ) : (
+                                        <Text
+                                            style={{
+                                                fontFamily: "monospace",
+                                                background: "gray",
+                                                padding: "10px",
+                                                whiteSpace: "pre-line",
+                                            }}
+                                        >
+                                            {ocrResult}
+                                        </Text>
+                                    )}
+                                </Tabs.Tab>
+                                <Tabs.Tab
+                                    label="Kết quả bóc tách"
+                                    disabled={res === undefined || res === ""}
+                                    
+                                >
+                                    {loading ? (
+                                        <div className="flex justify-center">
+                                            <Loader size={100} variant="dots" />
+                                        </div>
+                                    ) : (
+                                        <div className="px-5">
+                                            <TableData data={res} />
+                                        </div>
+                                    )}
+                                </Tabs.Tab>
+                            </Tabs>
+                        </>
                     </Stack>
                 </Stack>
             </Group>
