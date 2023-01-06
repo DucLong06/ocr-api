@@ -21,7 +21,7 @@ def _add_to_result(label: str, text: str, pattern: str) -> dict:
     res = {
         "Label": label,
         "Text": text,
-        "pattern": pattern
+        "Pattern": pattern
     }
     return res
 
