@@ -28,7 +28,8 @@ PATH_CHECKPOINT = my_env.PATH_TO_MODEL_REC_CHECKPOINT
 # Load model
 MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CV)
 MODEL_DETECT_CI = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CI)
-MODEL_REC = my_ocr.load_model_recog(PATH_INIT_MODEL, PATH_MODEL_META, PATH_CHECKPOINT)
+MODEL_REC = my_ocr.load_model_recog(
+    PATH_INIT_MODEL, PATH_MODEL_META, PATH_CHECKPOINT)
 
 # Logger
 logger = my_logger.Logger("LOG", my_env.LOG)
@@ -43,7 +44,8 @@ def _call_my_ocr(model, list_area, path_to_save):
 
 
 def _convert_and_save(b64_string):
-    path_to_save = os.path.join(my_env.UPLOAD_FOLDER, str(uuid.uuid4())) + ".jpg"
+    path_to_save = os.path.join(
+        my_env.UPLOAD_FOLDER, str(uuid.uuid4())) + ".jpg"
     logger.info("Preprocessing image: %s" % str(path_to_save))
     with open(path_to_save, "wb") as fh:
         fh.write(base64.decodebytes(b64_string.encode()))
@@ -51,12 +53,12 @@ def _convert_and_save(b64_string):
     return path_to_save
 
 
-@app.route("/", methods=["GET"])
+@app.route("/api/", methods=["GET"])
 def ping():
     return {"msg": "Server is OK"}
 
 
-@app.route("/cv", methods=["POST"])
+@app.route("/api/cv", methods=["POST"])
 def detect_cv():
     b64_string = request.get_json()["ImageBase64"]
 
@@ -68,7 +70,8 @@ def detect_cv():
 
         if len(area) != 0:
             logger.info("Recognizing image: %s" % str(path_to_save))
-            res = my_cv.handle_ocr_cv(area, path_to_save, MODEL_DETECT_CI, MODEL_REC)
+            res = my_cv.handle_ocr_cv(
+                area, path_to_save, MODEL_DETECT_CI, MODEL_REC)
         else:
             res = ""
 
@@ -80,7 +83,7 @@ def detect_cv():
     return "Đã có lỗi xảy ra"
 
 
-@app.route("/img2text", methods=["POST"])
+@app.route("/api/img2text", methods=["POST"])
 def recognize():
     b64_string = request.get_json()["ImageBase64"]
 
@@ -104,7 +107,7 @@ def recognize():
     return "Đã có lỗi xảy ra"
 
 
-@app.route("/cccd", methods=["POST"])
+@app.route("/api/cccd", methods=["POST"])
 def recognize_cccd():
     text = ""
     b64_string = request.get_json()["ImageBase64"]

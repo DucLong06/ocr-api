@@ -43,7 +43,7 @@ def _call_yolo(model, path_to_image, path_save_output):
     return img, list_output
 
 
-def predict_model(model: str, path_to_input: str) -> (list, str):
+def predict_model(model: str, path_to_input: str):
     path_save_output = my_env.OUTPUT_FOLDER + path_to_input.replace(
         my_env.UPLOAD_FOLDER, ""
     )

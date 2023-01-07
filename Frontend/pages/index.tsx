@@ -26,7 +26,7 @@ const Home = () => {
     useEffect(() => {}, []);
 
     const post = async (path: string, data: Idata): Promise<_IApiResponse> => {
-        return axiosClient.post(`/${path}`, data);
+        return axiosClient.post(`/api/${path}`, data);
     };
 
     const handleExtract = async (endpoint: string) => {
@@ -104,15 +104,10 @@ const Home = () => {
 
                     <Stack>
                         <>
-                            <Tabs
-                                variant="outline"
-                                tabPadding="sm"
-                          
-                            >
+                            <Tabs variant="outline" tabPadding="sm">
                                 <Tabs.Tab
                                     label="Kết quả nhận dạng"
                                     disabled={ocrResult == ""}
-                                    
                                 >
                                     {loading ? (
                                         <div className="flex justify-center">
@@ -134,7 +129,6 @@ const Home = () => {
                                 <Tabs.Tab
                                     label="Kết quả bóc tách"
                                     disabled={res === undefined || res === ""}
-                                    
                                 >
                                     {loading ? (
                                         <div className="flex justify-center">
