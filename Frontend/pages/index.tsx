@@ -18,11 +18,13 @@ const Home = () => {
             setImageData(imageDataUri as string);
         };
         reader.readAsDataURL(file);
+        setNoClick(false);
     };
 
     const [ocrResult, setOcrResult] = useState("");
     const [loading, setLoading] = useState(false);
     const [res, setRes] = useState();
+    const [noClick, setNoClick] = useState(false);
     useEffect(() => {}, []);
 
     const post = async (path: string, data: Idata): Promise<_IApiResponse> => {
@@ -42,7 +44,7 @@ const Home = () => {
             setOcrResult(response.body?.text || "");
             setRes(response.body?.res || "");
             setImageData("data:image/jpeg;base64," + response.body.imagebase64);
-            console.log(res);
+            setNoClick(true);
         } catch (error) {
             console.log(error);
         }
@@ -77,21 +79,21 @@ const Home = () => {
                 <Stack style={{ flex: "1" }}>
                     <div className="flex gap-11">
                         <Button
-                            disabled={!imageData || loading}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("img2text")}
                             className="bg-blue-500"
                         >
                             Nhận dạng chữ in
                         </Button>
                         <Button
-                            disabled={!imageData || loading}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("cv")}
                             className="bg-blue-500"
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
-                            disabled={!imageData || loading}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("cccd")}
                             className="bg-blue-500"
                         >
