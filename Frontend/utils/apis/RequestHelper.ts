@@ -47,7 +47,7 @@ const statusCode = (status: any, message: any) => {
 }
 
 const axiosClient = axios.create({
-    baseURL: process.env.REACT_APP_URL_BE || "http://localhost:5000",
+    baseURL: process.env.REACT_APP_URL_BE || "http://10.10.6.126:5000",
     paramsSerializer: (params) => queryString.stringify(params)
 })
 
@@ -83,7 +83,7 @@ export default axiosClient;
 
 export async function getRequest(path: any): Promise<_IApiResponse> {
   
-    return await axios.get(process.env.REACT_APP_URL_BE || "http://localhost:5000" + path)
+    return await axios.get(process.env.REACT_APP_URL_BE || "http://10.10.6.126:5000" + path)
         .then(
             (response) => {
                 const apiResponse: _IApiResponse = {
@@ -112,7 +112,7 @@ export function axiosRequest(method: any, path: any, params: object, isUpload?: 
         axios({
             data: JSON.stringify(params),
             method: method,
-            url: process.env.REACT_APP_URL_BE || "http://localhost:5000" + path
+            url: process.env.REACT_APP_URL_BE || "http://10.10.6.126:5000" + path
         })
             .then(function (response) {
                 resolve({
