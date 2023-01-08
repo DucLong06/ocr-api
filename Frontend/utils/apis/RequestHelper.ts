@@ -82,11 +82,6 @@ export default axiosClient;
 // window.addEventListener('storage', onStorageUpdate)
 
 export async function getRequest(path: any): Promise<_IApiResponse> {
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 16b6f8ff13c19ebc959b2931d99ba62f42971f6f
     return await axios.get(process.env.REACT_APP_URL_BE || "http://10.10.6.126:5000" + path)
         .then(
             (response) => {
