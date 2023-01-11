@@ -127,7 +127,6 @@ def recognize_cccd():
 
         logger.info("Done processing")
         return {"res": res, "imagebase64": str(imagebase64.decode("utf-8")), "text": text}
-    # return {"text":text}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Đã có lỗi xảy ra"
