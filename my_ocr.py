@@ -2,7 +2,7 @@ import tensorflow as tf
 import cv2
 
 
-def _sort_Rect(rect, cols):
+def _sort_rect(rect, cols):
     tolerance_factor = 10
     return ((rect["Y_min"] // tolerance_factor) * tolerance_factor) * cols + rect[
         "X_min"
@@ -42,7 +42,7 @@ def load_model_recog(init, meta, checkpoint):
 def recognize_images(model, list_area, path_to_image):
     img = cv2.imread(path_to_image)
     text = ""
-    list_area.sort(key=lambda x: _sort_Rect(x, img.shape[1]))
+    list_area.sort(key=lambda x: _sort_rect(x, img.shape[1]))
     for area in list_area:
         img_crop = img[
                    int(area["Y_min"]): int(area["Y_max"]),
