@@ -18,18 +18,32 @@ app = Flask(__name__)
 # Apply Flask CORS
 CORS(app)
 
-# path model
-PATH_INIT_MODEL = os.path.join(my_env.PATH_TO_MODEL_REC_CI, "init_model.meta")
-PATH_MODEL_META = os.path.join(
-    my_env.PATH_TO_MODEL_REC_CHECKPOINT, "model.ckpt-1184100.meta"
+# path model CI
+PATH_INIT_MODEL_CI = os.path.join(my_env.PATH_TO_MODEL_REC_CI, "init_model.meta")
+PATH_MODEL_META_CI = os.path.join(
+    my_env.PATH_TO_MODEL_REC_CHECKPOINT_CI, "model.ckpt-1184100.meta"
 )
-PATH_CHECKPOINT = my_env.PATH_TO_MODEL_REC_CHECKPOINT
+PATH_CHECKPOINT_CI = my_env.PATH_TO_MODEL_REC_CHECKPOINT_CI
 
-# Load model
-MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CV)
+# Load model chu in
 MODEL_DETECT_CI = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CI)
-MODEL_REC = my_ocr.load_model_recog(
-    PATH_INIT_MODEL, PATH_MODEL_META, PATH_CHECKPOINT)
+MODEL_REC_CI = my_ocr.load_model_recog(
+    PATH_INIT_MODEL_CI, PATH_MODEL_META_CI, PATH_CHECKPOINT_CI)
+
+# path model CVT
+PATH_INIT_MODEL_CVT = os.path.join(my_env.PATH_TO_MODEL_REC_CVT, "init_model.meta")
+PATH_MODEL_META_CVT = os.path.join(
+    my_env.PATH_TO_MODEL_REC_CHECKPOINT_CVT, "model.ckpt-457400.meta"
+)
+PATH_CHECKPOINT_CVT = my_env.PATH_TO_MODEL_REC_CHECKPOINT_CVT
+
+# Load model chu viet tay
+MODEL_DETECT_CVT = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CVT)
+MODEL_REC_CVT = my_ocr.load_model_recog(
+    PATH_INIT_MODEL_CVT, PATH_MODEL_META_CVT, PATH_CHECKPOINT_CVT)
+
+# load model CV
+MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CV)
 
 # Logger
 logger = my_logger.Logger("LOG", my_env.LOG)
@@ -71,7 +85,7 @@ def detect_cv():
         if len(area) != 0:
             logger.info("Recognizing image: %s" % str(path_to_save))
             res = my_cv.handle_ocr_cv(
-                area, path_to_save, MODEL_DETECT_CI, MODEL_REC)
+                area, path_to_save, MODEL_DETECT_CI, MODEL_REC_CI)
         else:
             res = ""
 
@@ -83,25 +97,30 @@ def detect_cv():
     return "Đã có lỗi xảy ra"
 
 
-@app.route("/api/img2text", methods=["POST"])
-def recognize():
+@app.route("/api/img2text/<charType>", methods=["POST"])
+def recognize(char_type="text"):
+
+    path_model_detect = MODEL_DETECT_CI
+    path_model_recognize = MODEL_REC_CI
     b64_string = request.get_json()["ImageBase64"]
 
+    if char_type == "handwrite":
+        path_model_detect = MODEL_DETECT_CVT
+        path_model_recognize = MODEL_REC_CVT
     try:
         path_to_save = _convert_and_save(b64_string)
 
         logger.info("Detecting image: %s" % str(path_to_save))
-        imagebase64, area = _call_my_yolo(MODEL_DETECT_CI, path_to_save)
+        imagebase64, area = _call_my_yolo(path_model_detect, path_to_save)
 
         if len(area) != 0:
             logger.info("Recognizing image: %s" % str(path_to_save))
-            text = _call_my_ocr(MODEL_REC, area, path_to_save)
+            text = _call_my_ocr(path_model_recognize, area, path_to_save)
         else:
             text = ""
 
         logger.info("Done processing")
         return {"text": text, "imagebase64": str(imagebase64.decode("utf-8"))}
-    # return {"text":text}
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Đã có lỗi xảy ra"
@@ -120,7 +139,7 @@ def recognize_cccd():
 
         if len(area) != 0:
             logger.info("Recognizing image: %s" % str(path_to_save))
-            text = _call_my_ocr(MODEL_REC, area, path_to_save)
+            text = _call_my_ocr(MODEL_REC_CI, area, path_to_save)
             res = my_cccd.handle_CCCD(text, area)
         else:
             res = []
