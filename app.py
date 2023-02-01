@@ -19,7 +19,8 @@ app = Flask(__name__)
 CORS(app)
 
 # path model CI
-PATH_INIT_MODEL_CI = os.path.join(my_env.PATH_TO_MODEL_REC_CI, "init_model.meta")
+PATH_INIT_MODEL_CI = os.path.join(
+    my_env.PATH_TO_MODEL_REC_CI, "init_model.meta")
 PATH_MODEL_META_CI = os.path.join(
     my_env.PATH_TO_MODEL_REC_CHECKPOINT_CI, "model.ckpt-1184100.meta"
 )
@@ -30,19 +31,8 @@ MODEL_DETECT_CI = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CI)
 MODEL_REC_CI = my_ocr.load_model_recog(
     PATH_INIT_MODEL_CI, PATH_MODEL_META_CI, PATH_CHECKPOINT_CI)
 
-# path model CVT
-PATH_INIT_MODEL_CVT = os.path.join(my_env.PATH_TO_MODEL_REC_CVT, "init_model.meta")
-PATH_MODEL_META_CVT = os.path.join(
-    my_env.PATH_TO_MODEL_REC_CHECKPOINT_CVT, "model.ckpt-457400.meta"
-)
-PATH_CHECKPOINT_CVT = my_env.PATH_TO_MODEL_REC_CHECKPOINT_CVT
 
-# Load model chu viet tay
-MODEL_DETECT_CVT = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CVT)
-MODEL_REC_CVT = my_ocr.load_model_recog(
-    PATH_INIT_MODEL_CVT, PATH_MODEL_META_CVT, PATH_CHECKPOINT_CVT)
-
-# load model CV
+# # load model CV
 MODEL_CV = my_yolo.load_model(my_env.PATH_TO_MODEL_DETECT_CV)
 
 # Logger
@@ -67,7 +57,7 @@ def _convert_and_save(b64_string):
     return path_to_save
 
 
-@app.route("/api/", methods=["GET"])
+@app.route("/", methods=["GET"])
 def ping():
     return {"msg": "Server is OK"}
 
@@ -97,16 +87,13 @@ def detect_cv():
     return "Đã có lỗi xảy ra"
 
 
-@app.route("/api/img2text/<charType>", methods=["POST"])
-def recognize(char_type="text"):
+@app.route("/api/img2text", methods=["POST"])
+def recognize():
 
     path_model_detect = MODEL_DETECT_CI
     path_model_recognize = MODEL_REC_CI
     b64_string = request.get_json()["ImageBase64"]
 
-    if char_type == "handwrite":
-        path_model_detect = MODEL_DETECT_CVT
-        path_model_recognize = MODEL_REC_CVT
     try:
         path_to_save = _convert_and_save(b64_string)
 
@@ -149,7 +136,6 @@ def recognize_cccd():
     except Exception as e:
         logger.error("Error processing image: %s" % str(e))
     return "Đã có lỗi xảy ra"
-
 
 # Start Backend
 if __name__ == "__main__":
