@@ -79,27 +79,24 @@ const Home = () => {
                 <Stack style={{ flex: "1" }}>
                     <div className="flex gap-11">
                         <Button
-                            disabled={noClick}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("img2text")}
                             className="bg-blue-500"
-                            loading={loading}
                         >
                             Nhận dạng chữ in
                         </Button>
 
                         <Button
-                            disabled={noClick}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("cv")}
                             className="bg-blue-500"
-                            loading={loading}
                         >
                             Bóc tách thông tin CV
                         </Button>
                         <Button
-                            disabled={noClick}
+                            disabled={loading || noClick}
                             onClick={() => handleExtract("cccd")}
                             className="bg-blue-500"
-                            loading={loading}
                         >
                             Bóc tách thông tin CCCD
                         </Button>

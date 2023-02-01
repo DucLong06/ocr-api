@@ -1,4 +1,4 @@
-import { Textarea, TextInput } from "@mantine/core";
+import { Textarea } from "@mantine/core";
 
 type Props = {
     data: any;
@@ -19,16 +19,14 @@ const handleData = (data: any) => {
                     size="md"
                     minRows={1}
                     autosize
-                    value={data[i].Text.replace("\n","")}
+                    value={data[i].Text.replace("\n", "")}
                 />
             );
         }
         return <>{rows}</>;
     }
     return null;
-
-}
- 
+};
 
 const TableData = ({ data }: Props) => {
     return <div className="">{handleData(data)}</div>;
