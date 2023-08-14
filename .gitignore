@@ -10,7 +10,7 @@ __pycache__/
 input/
 log/
 output/
-
+weights/
 # Distribution / packaging
 .Python
 build/
